@@ -10,7 +10,6 @@ namespace pwm_cover {
 void PwmCoverMovementController::set_pwm_level(float level) {
   this->pwm_output_->set_level(level);
   this->current_pwm_level_ = level;
-  // ESP_LOGD("Set progress", "Progress %f", this->current_pwm_level_);
 }
 
 void PwmCoverMovementController::start_movement() {
@@ -42,10 +41,11 @@ bool PwmCoverMovementController::control_correct_movement(bool is_reverse_direct
   this->prev_encoder_value = this->encoder_sensor_->state;
   this->prev_encoder_value_time_ = now;
 
-  return last_moving_time > 1500;
+  return now - last_moving_time < 1500;
 }
 
 void PwmCoverMovementController::stop_movement() {
+  ESP_LOGD("Debug pwm", "Level on stop %f", this->current_pwm_level_);
   set_pwm_level(0);
   acceleration_transition_ = nullptr;
   min_moving_speed_before_stop_detected = false;
@@ -54,7 +54,7 @@ void PwmCoverMovementController::stop_movement() {
 void PwmCoverMovementController::calibrate_max_value() { this->max_encoder_value_ = this->encoder_sensor_->state; }
 
 void PwmCoverMovementController::init_position(float position) const {
-  this->encoder_sensor_->publish_state(position * this->max_encoder_value_);
+  this->encoder_sensor_->set_value(position * this->max_encoder_value_);
 }
 
 float PwmCoverMovementController::get_position() const {
