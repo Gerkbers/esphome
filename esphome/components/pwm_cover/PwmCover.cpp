@@ -42,7 +42,7 @@ void PwmCover::control(const cover::CoverCall &call) {
     if (pos == this->position) {
       return;
     }
-    if (pos == 1.0f) {
+    if (pos == 1.0f && this->current_operation != cover::COVER_OPERATION_OPENING) {
       this->current_operation = cover::COVER_OPERATION_OPENING;
       this->publish_state();
       opening_pin_->digital_write(true);
@@ -50,7 +50,7 @@ void PwmCover::control(const cover::CoverCall &call) {
       movement_controller_->start_movement();
       return;
     }
-    if (pos == 0.0f) {
+    if (pos == 0.0f && this->current_operation != cover::COVER_OPERATION_CLOSING) {
       this->current_operation = cover::COVER_OPERATION_CLOSING;
       this->publish_state();
       opening_pin_->digital_write(false);

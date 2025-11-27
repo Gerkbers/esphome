@@ -41,7 +41,7 @@ bool PwmCoverMovementController::control_correct_movement(bool is_reverse_direct
   this->prev_encoder_value = this->encoder_sensor_->state;
   this->prev_encoder_value_time_ = now;
 
-  return now - last_moving_time < 1500;
+  return now - last_moving_time < 2000;
 }
 
 void PwmCoverMovementController::stop_movement() {
@@ -73,7 +73,7 @@ void PwmCoverMovementController::apply_acceleration_speed() {
 void PwmCoverMovementController::apply_speed_by_position(bool is_reverse_direction, uint32_t d_last_movement_control) {
   const auto speed = std::abs(this->prev_encoder_value - this->encoder_sensor_->state) / d_last_movement_control;
 
-  if (speed < 0.35f) {
+  if (speed < this->min_speed_coef_) {
     min_moving_speed_before_stop_detected = true;
   }
   if (!min_moving_speed_before_stop_detected) {

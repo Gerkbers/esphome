@@ -20,6 +20,7 @@ class PwmCoverMovementController {
   void set_default_transition_length(uint32_t transition_length) { acceleration_transition_length_ = transition_length; }
   void set_max_encoder_value(float max_encoder_value) { max_encoder_value_ = max_encoder_value; }
   void set_estimated_breaking_pwm_level(float stop_opening_level) { estimated_breaking_pwm_level_ = stop_opening_level; }
+  void set_min_speed_coef(float min_speed_coef) { min_speed_coef_ = min_speed_coef; }
 
   void start_movement();
   bool control_correct_movement(bool is_reverse_direction);
@@ -40,6 +41,7 @@ class PwmCoverMovementController {
   output::FloatOutput *pwm_output_;
   float current_pwm_level_ = 0;
   float estimated_breaking_pwm_level_ = 0.5f;
+  float min_speed_coef_ = 0.35f;
 
   rotary_encoder::RotaryEncoderSensor *encoder_sensor_{nullptr};
   float max_encoder_value_ = 0;

@@ -16,6 +16,7 @@ CONF_PWM_OUTPUT = "pwm_output"
 CONF_MAX_ENCODER_VALUE = "max_encoder_value"
 CONF_ESTIMATED_BREAKING_PWM_LEVEL = "estimated_breaking_pwm_level"
 CONF_MOVEMENT_CONTROLLER = "pwm_cover_movement_controller"
+CONF_MIN_SPEED_COEF = "min_speed_coef"
 
 pwm_cover_ns = cg.esphome_ns.namespace("pwm_cover")
 PwmCover = pwm_cover_ns.class_("PwmCover", cover.Cover, cg.Component)
@@ -34,6 +35,7 @@ CONFIG_SCHEMA = cv.All(
             cv.Required(CONF_CLOSE_ENDSTOP): cv.use_id(binary_sensor.BinarySensor),
             cv.Optional(CONF_ROTARY_ENCODER): cv.use_id(RotaryEncoderSensor),
             cv.Optional(CONF_ESTIMATED_BREAKING_PWM_LEVEL): cv.zero_to_one_float,
+            cv.Optional(CONF_MIN_SPEED_COEF): cv.zero_to_one_float,
             cv.Optional(
                 CONF_DEFAULT_TRANSITION_LENGTH,
                 default="4s"
@@ -69,6 +71,8 @@ async def to_code(config):
     if CONF_ESTIMATED_BREAKING_PWM_LEVEL in config:
         cg.add(mc.set_estimated_breaking_pwm_level(config[CONF_ESTIMATED_BREAKING_PWM_LEVEL]))
 
+    if CONF_MIN_SPEED_COEF in config:
+        cg.add(mc.set_min_speed_coef(config[CONF_MIN_SPEED_COEF]))
 
     var = await cover.new_cover(config, mc)
     await cg.register_component(var, config)
